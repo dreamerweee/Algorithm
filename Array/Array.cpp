@@ -20,7 +20,7 @@ void Array::Insert(const int value)
 
 	// 插入数据
 	for (size_t i = m_size; i > ins_idx; --i) {
-		m_data[i] = m_data[i - 1]
+		m_data[i] = m_data[i - 1];
 	}
 	m_data[ins_idx] = value;
 	++m_size;
@@ -71,7 +71,7 @@ void Array::Print() const
 		cout << "This Array is Empty." << endl;
 		return ;
 	}
-	for (auto v : m_data)
-		cout << v << " ";
+	for (size_t i = 0; i < m_size; ++i)
+		cout << m_data[i] << " ";
 	cout << endl;
 }

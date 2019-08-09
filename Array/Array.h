@@ -3,9 +3,14 @@
 #ifndef ARRAY_H_
 #define ARRAY_H_
 
+#include <cstdlib>
+
 class Array {
 public:
-	explicit Array(size_t len) : m_data(new int[len]), m_maxlen(len) { }
+	explicit Array(size_t len) : m_size(0), m_maxlen(len)
+	{
+		m_data = new int[len]();
+	}
 	~Array()
 	{
 		delete [] m_data;
@@ -18,7 +23,7 @@ public:
 
 private:
 	int *m_data;
-	size_t m_size = 0;
+	size_t m_size;
 	size_t m_maxlen;
 };
 
