@@ -54,7 +54,7 @@ void Array::Update(const size_t idx, const int new_value)
 		}
 	} else if ((idx + 1 < m_size) && (m_data[idx+1] < new_value)) {  // 新值变大，往后移动
 		for (; new_idx < m_size - 1; ++new_idx) {
-			if (m_data[new_idx+1] > new_value)
+			if (m_data[new_idx+1] < new_value)
 				m_data[new_idx] = m_data[new_idx+1];
 			else
 				break;
