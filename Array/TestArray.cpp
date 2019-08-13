@@ -17,6 +17,9 @@ int main()
 		da.Print();
 	}
 
+	cout << "========================" << endl;
+	cin.clear();
+
 	Array arr(10);
 	arr.Delete(0);
 	while (cin >> value) {
