@@ -4,6 +4,7 @@
 #define ARRAY_H_
 
 #include <cstdlib>
+#include <stdexcept>
 
 class Array {
 public:
@@ -20,6 +21,18 @@ public:
 	void Delete(const size_t idx);  // 删除idx位置上的元素
 	void Update(const size_t idx, const int new_value);
 	void Print() const;
+
+	size_t GetSize() const
+	{
+		return m_size;
+	}
+
+	int& operator[](size_t idx) const
+	{
+		if (idx >= m_size)
+			throw std::out_of_range("Index out of range!");
+		return m_data[idx];
+	}
 
 private:
 	int *m_data;
