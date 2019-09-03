@@ -60,8 +60,48 @@ double FindMedianSortedArrays(vector<int>& nums1, vector<int>& nums2)
 	return 0;
 }
 
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
 // 参考解答：https://leetcode-cn.com/problems/median-of-two-sorted-arrays/solution/xun-zhao-liang-ge-you-xu-shu-zu-de-zhong-wei-shu-b/
 double FindMedianSortedArrays(vector<int>& nums1, vector<int>& nums2)
 {
+	size_t m = nums1.size();
+	size_t n = nums2.size();
 
+	if (m > n) {
+		return FindMedianSortedArrays(nums2, nums1);
+	}
+
+	size_t min = 0, max = m;
+	size_t half = (m + n + 1) / 2;  // 加1为处理奇数的情况
+	while (min <= max) {
+		size_t i = (min + max) / 2;
+		size_t j= half - i;
+		if (i < max && nums2[j-1] > nums1[i]) {
+			min = i + 1;
+		} else if (i > min && nums1[i-1] > nums2[j]) {
+			max = i - 1;
+		} else {
+			int max_left = 0;
+			if (i == 0)
+				max_left = nums2[j-1];
+			else if (j == 0)
+				max_left = nums1[i-1];
+			else
+				max_left = MAX(nums1[i-1], nums2[j-1]);
+			if ((m + n) % 2 == 1)
+				return max_left;
+
+			int min_right = 0;
+			if (i == m)
+				min_right = nums2[j];
+			else if (j == n)
+				min_right = nums1[i];
+			else
+				min_right = MIN(nums1[i], nums2[j]);
+			return (max_left + min_right) / 2.0;
+		}
+	}
+	return 0.0;
 }
