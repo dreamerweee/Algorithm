@@ -12,6 +12,8 @@
 
 TreeNode* InvertTree(TreeNode* root)
 {
+	if (!root)
+		return nullptr;
 	if (root->left)
 		InvertTree(root->left);
 	if (root->right)
