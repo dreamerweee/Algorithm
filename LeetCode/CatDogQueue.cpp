@@ -19,7 +19,7 @@ public:
 	{
 		return m_type;
 	}
-
+	virtual void Speak() const = 0;
 private:
 	string m_type;
 };
@@ -28,19 +28,27 @@ class Cat : public Pet {
 public:
 	Cat() : Pet("cat")
 	{ }
+	void Speak() const
+	{
+		cout << "miao miao miao!" << endl;
+	}
 };
 
 class Dog : public Pet {
 public:
 	Dog() : Pet("dog")
 	{ }
+	void Speak() const
+	{
+		cout << "wang wang wang!" << endl;
+	}
 };
 
 class PetEntry {
 public:
 	PetEntry() = default;
-	PetEntry(shared_ptr<Pet> &&sp_pet, size_t idx)
-		: m_sp_pet(sp_pet), m_index(idx)
+	PetEntry(Pet *p_pet, size_t idx)
+		: m_sp_pet(p_pet), m_index(idx)
 	{ }
 
 	size_t GetIndex() const
@@ -59,7 +67,7 @@ private:
 
 class CatDogQueue {
 public:
-	void Push(Pet &&pet);
+	void Push(Pet *p_pet);
 	shared_ptr<Pet> PopAll();
 	shared_ptr<Pet> PopCat();
 	shared_ptr<Pet> PopDog();
@@ -83,12 +91,12 @@ private:
 	size_t m_count = 0;
 };
 
-void CatDogQueue::Push(Pet &&pet)
+void CatDogQueue::Push(Pet *p_pet)
 {
-	if (pet.GetType() == "cat") {
-		m_cat_queue.push(PetEntry(make_shared<Pet>(Cat()), m_count++));
-	} else if (pet.GetType() == "dog") {
-		m_dog_queue.push(PetEntry(make_shared<Pet>(Dog()), m_count++));
+	if (p_pet->GetType() == "cat") {
+		m_cat_queue.push(PetEntry(p_pet, m_count++));
+	} else if (p_pet->GetType() == "dog") {
+		m_dog_queue.push(PetEntry(p_pet, m_count++));
 	} else {
 		cout << "Error pet type." << endl;
 	}
@@ -148,9 +156,10 @@ int main()
 	my_cdq.PopCat();
 	my_cdq.PopDog();
 
-	my_cdq.Push(Cat());
+	my_cdq.Push(new Cat());
 	shared_ptr<Pet> ptr = my_cdq.PopAll();
 	if (ptr) {
+		ptr->Speak();
 		cout << "type is: " << ptr->GetType() << endl;
 	}
 	ptr = my_cdq.PopCat();
@@ -162,13 +171,16 @@ int main()
 		cout << "111" << endl;
 	}
 
-	my_cdq.Push(Dog());
+	my_cdq.Push(new Dog());
+	my_cdq.Push(new Dog());
+	my_cdq.Push(new Dog());
 	ptr = my_cdq.PopCat();
 	if (!ptr) {
 		cout << "222" << endl;
 	}
 	ptr = my_cdq.PopDog();
 	if (ptr) {
+		ptr->Speak();
 		cout << "type is: " << ptr->GetType() << endl;
 	}
 
