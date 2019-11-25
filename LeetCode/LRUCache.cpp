@@ -36,10 +36,39 @@ private:
 		node->m_next = next;
 	}
 
+	void DeleteLast()
+	{
+		Node *last = m_tail->m_prev;
+		Node *prev = last->m_prev;
+		prev->m_next = m_tail;
+		m_tail->m_prev = prev;
+		delete last;
+	}
+
+	void InsertHead(Node *node)
+	{
+		Node *next = m_head->m_next;
+		m_head->m_next = node;
+		next->m_prev = node;
+		node->m_prev = m_head;
+		node->m_next = next;
+	}
+
 public:
 	LRUCache(int capacity)
-		: m_capacity(capacity), m_head(new Node(-1, nullptr, nullptr)), m_tail(m_head)
-	{ }
+		: m_capacity(capacity), m_head(new Node(-1, nullptr, nullptr)), m_tail(new Node(-1, nullptr, nullptr))
+	{
+		m_head->m_next = m_tail;
+		m_tail->m_prev = m_head;
+	}
+	~LRUCache()
+	{
+		while (m_head) {
+			Node *cur = m_head;
+			m_head = m_head->m_next;
+			delete cur;
+		}
+	}
 
 	int get(int key) {
 		int value = -1;
@@ -52,11 +81,24 @@ public:
 	}
 
 	void put(int key, int value) {
-		
+		auto search = m_data.find(key);
+		if (search != m_data.end()) {
+			return;
+		}
+
+		if (m_size >= m_capacity) {
+			DeleteLast();
+		}
+
+		Node *new_node = new Node(value, nullptr, nullptr);
+		m_data[key] = new_node;
+		InsertHead(new_node)
+		++m_size;
 	}
 
 private:
 	int m_capacity;
+	int m_size;
 	Node *m_head;
 	Node *m_tail;
 	std::unordered_map<int, Node*> m_data;
