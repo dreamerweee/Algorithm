@@ -11,12 +11,13 @@
 class LRUCache {
 private:
 	typedef struct Node {
+		int m_key;
 		int m_value;
 		struct Node *m_next;
 		struct Node *m_prev;
 
-		Node(int value, struct Node *next, struct Node *prev)
-			: m_value(value), m_next(next), m_prev(prev)
+		Node(int key, int value, struct Node *next, struct Node *prev)
+			: m_key(key), m_value(value), m_next(next), m_prev(prev)
 		{ }
 	} Node;
 
@@ -34,6 +35,7 @@ private:
 		m_head->m_next = node;
 		node->m_prev = m_head;
 		node->m_next = next;
+		next->m_prev = node;
 	}
 
 	void DeleteLast()
@@ -42,7 +44,9 @@ private:
 		Node *prev = last->m_prev;
 		prev->m_next = m_tail;
 		m_tail->m_prev = prev;
+		m_data.erase(last->m_key);
 		delete last;
+		--m_size;
 	}
 
 	void InsertHead(Node *node)
@@ -56,7 +60,9 @@ private:
 
 public:
 	LRUCache(int capacity)
-		: m_capacity(capacity), m_head(new Node(-1, nullptr, nullptr)), m_tail(new Node(-1, nullptr, nullptr))
+		: m_capacity(capacity), m_size(0),
+		m_head(new Node(-1, -1, nullptr, nullptr)),
+		m_tail(new Node(-1, -1, nullptr, nullptr))
 	{
 		m_head->m_next = m_tail;
 		m_tail->m_prev = m_head;
@@ -74,7 +80,7 @@ public:
 		int value = -1;
 		auto search = m_data.find(key);
 		if (search != m_data.end()) {
-			value = search->second->value;
+			value = search->second->m_value;
 			UpdateList(search->second);
 		}
 		return value;
@@ -83,16 +89,17 @@ public:
 	void put(int key, int value) {
 		auto search = m_data.find(key);
 		if (search != m_data.end()) {
+			search->second->m_value = value;
+			UpdateList(search->second);
 			return;
 		}
-
 		if (m_size >= m_capacity) {
 			DeleteLast();
 		}
 
-		Node *new_node = new Node(value, nullptr, nullptr);
+		Node *new_node = new Node(key, value, nullptr, nullptr);
+		InsertHead(new_node);
 		m_data[key] = new_node;
-		InsertHead(new_node)
 		++m_size;
 	}
 
