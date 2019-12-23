@@ -4,16 +4,20 @@
 
 string LongestPalindrome(string s)
 {
-	size_t len = s.size();
-	if (len <= 1) {
-		return s;
-	}
-
-	for (size_t left = 0; letf < len; ++left) {
-		for (size_t right = len - 1; right > 0; --right) {
-			if (s[left] == s[right]) {
-				
+	bool dp[1000][1000];
+	auto len = s.size();
+	string result;
+	for (int i = len - 1; i >= 0; --i) {
+		for (int j = i; j < len; ++j) {
+			if (s[i] == s[j] && (j - i < 2 || dp[i+1][j-1])) {
+				dp[i][j] = true;
+			} else {
+				dp[i][j] = false;
+			}
+			if (dp[i][j] && j - i + 1 > result.size()) {
+				result = s.substr(i, j-i+1);
 			}
 		}
 	}
+	return result;
 }
