@@ -32,3 +32,22 @@ int UniquePaths(int m, int n)
 
   return states[m-1][n-1];
 }
+
+
+// 空间优化
+int UniquePaths(int m, int n)
+{
+  vector<int> states(n);
+  // 初始化
+  for (int j = 0; j < n; ++j) {
+    states[j] = 1;  // 只有一条路径，一直在最上面走
+  }
+  // 填表
+  for (int i = 1; i < m; ++i) {
+    for (int j = 1; j < n; ++j) {
+      states[j] += states[j-1];
+    }
+  }
+
+  return states[n-1];
+}
