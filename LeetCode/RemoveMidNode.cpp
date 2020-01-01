@@ -29,3 +29,29 @@ Node* RemoveMidNode(Node *head)
 
   return head;
 }
+
+// 进阶，找到需要删除的节点位置
+// 假设链表长度为n，则要删除的节点为a*n/b，结果向上取整
+Node* RemoveMidNode(Node *head, int a, int b)
+{
+  if (a < 1 || a > b) {
+    return head;
+  }
+  int len = 0;
+  Node *curr = head;
+  while (curr) {
+    ++len;
+    curr = curr->next;
+  }
+  int pos = ceil((double)(a * n) / b);
+  if (pos == 1) {
+    return head->next;
+  } else if (pos > 1) {
+    curr = head;
+    while (--pos != 1) {
+      curr = curr->next;
+    }
+    curr->next = curr->next->next;
+  }
+  return head;
+}
