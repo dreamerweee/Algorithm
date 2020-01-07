@@ -5,6 +5,7 @@
 * 进阶问题：如果链表节点数为N，在时间复杂度为O(N)时完成原问题的要求
 */
 
+// 时间复杂度O(n*m)
 Node* JosephusKill(Node *head, int m)
 {
   if (!head || head->next == head || m < 1) {
@@ -30,4 +31,34 @@ Node* JosephusKill(Node *head, int m)
     curr = curr->next;
   }
   return curr;
+}
+
+// 进阶解法：直接计算出最终存活的节点
+int GetLive(int len, int m)
+{
+  if (len == 1) {
+    return 1;
+  }
+  return (GetLive(len - 1, m) + m - 1) % len + 1;
+}
+
+Node* JosephusKill(Node *head, int m)
+{
+  if (!head || head->next = head || m < 1) {
+    return head;
+  }
+
+  Node *curr = head;
+  int len = 1;
+  while (curr->next != head) {
+    ++len;
+    curr = curr->next;
+  }
+
+  int live_pos = GetLive(len, m);
+  while (--live_pos != 0) {
+    head = head->next;
+  }
+  head->next = head;
+  return head;
 }
