@@ -32,3 +32,73 @@ ListNode* DeleteDuplicates(ListNode* head)
 	}
 	return head;
 }
+
+// 递归解法
+ListNode* deleteDuplicates(ListNode *head)
+{
+	if (head == nullptr || head->next == nullptr) {
+		retturn head;
+	}
+	head->next = recursionDelete(head->next, head->val);
+	return head;
+}
+
+ListNode* recursionDelete(ListNode *node, int val)
+{
+	if (node == nullptr) {
+		return node;
+	}
+	if (node->val != val) {
+		node->next = recursionDelete(node->next, node->val);
+		return node;
+	}
+	ListNode *tmp = node;
+	node = node->next;
+	delete tmp;
+	return recursionDelete(node, val);
+}
+
+// 递归优化
+ListNode* deleteDuplicates(ListNode *head)
+{
+	if (head == nullptr || head->next == nullptr) {
+		return head;
+	}
+	recursionDelete(head, head->next);
+	return head;
+}
+
+void recursionDelete(ListNode *prev, ListNode *curr)
+{
+	if (curr == nullptr) {
+		return;
+	}
+	if (prev->val == curr->val) {
+		prev->next = curr->next;
+		delete curr;
+		recursionDelete(prev, prev->next);
+	} else {
+		recursionDelete(prev->next, curr->next);
+	}
+}
+
+// 循环解法
+ListNode* deleteDuplicates(ListNode *head)
+{
+	if (head == nullptr || head->next == nullptr) {
+		return head;
+	}
+	ListNode *prev = head;
+	ListNode *curr = head->next;
+	while (curr != nullptr) {
+		if (prev->val == curr->val) {
+			prev->next = curr->next;
+			delete curr;
+		} else {
+			prev = curr;
+		}
+		curr = prev->next;
+	}
+
+	return head;
+}
