@@ -1,6 +1,7 @@
 #include <vector>
 #include <stdexcept>
 #include <iostream>
+#include <deque>
 
 template <typename T>
 class Stack {
@@ -13,6 +14,13 @@ public:
     bool empty() const
     {
         return elems_.empty();
+    }
+
+    Stack() {}
+
+    Stack(const Stack &rhs)
+    {
+        elems_ = rhs.elems_;
     }
 };
 
@@ -40,6 +48,43 @@ T Stack<T>::top() const
     return elems_.back();
 }
 
+
+// 模板特化
+template<>
+class Stack<std::string> {
+private:
+    std::deque<std::string> elems_;
+public:
+    void push(const std::string&);
+    void pop();
+    std::string top() const;
+    bool empty() const
+    {
+        return elems_.empty();
+    }
+};
+
+void Stack<std::string>::push(const std::string &elem)
+{
+    elems_.push_back(elem);
+}
+
+void Stack<std::string>::pop()
+{
+    if (empty()) {
+        throw std::out_of_range("Stack<std::string>::pop() empty stack");
+    }
+    elems_.pop_back();
+}
+
+std::string Stack<std::string>::top() const
+{
+    if (empty()) {
+        throw std::out_of_range("Stack<std::string>::top() empty stack");
+    }
+    return elems_.back();
+}
+
 int main()
 {
     Stack<int> my_stack;
@@ -56,3 +101,4 @@ int main()
 
     return 0;
 }
+
